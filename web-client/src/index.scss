@@ -12,3 +12,18 @@
 @import './styles/tables.scss';
 @import './styles/tabs.scss';
 @import './styles/typography.scss';
+
+input[type='radio'] + label {
+  padding: 10px;
+  margin: 0;
+  color: $color-primary;
+}
+
+input[type='radio']:checked + label {
+  background-color: $color-primary;
+  color: white;
+}
+
+[type='radio'] + label::before {
+  display: none;
+}
