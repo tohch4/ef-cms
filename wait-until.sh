@@ -1,6 +1,6 @@
 #!/bin/bash
 url=$1
-max_tries=30
+max_tries=200
 try_count=0
 while [ true ]
 do

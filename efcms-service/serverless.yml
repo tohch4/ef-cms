@@ -1,16 +1,24 @@
 service: ef-cms
 plugins:
-  - serverless-dynamodb-local
   - serverless-s3-local
   - serverless-plugin-split-stacks
   - serverless-domain-manager
   - serverless-plugin-bind-deployment-id
   - serverless-plugin-aws-alerts
-  - serverless-offline
   - serverless-prune-plugin
   - serverless-plugin-tracing
+  - serverless-plugin-parcel
+  - serverless-offline
+  - serverless-dynamodb-local
 
 custom:
+  parcel:
+    target: node
+    cache: true
+    watch: true
+    sourceMaps: false
+    bundleNodeModules: true
+
   prune:
     automatic: true
     number: 3
