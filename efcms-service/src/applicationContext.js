@@ -6,7 +6,7 @@ const AWS =
     : require('aws-sdk');
 
 const uuidv4 = require('uuid/v4');
-const { S3, DynamoDB } = AWS;
+const { S3, DynamoDB, Lambda } = AWS;
 const docketNumberGenerator = require('ef-cms-shared/src/persistence/dynamo/cases/docketNumberGenerator');
 const irsGateway = require('ef-cms-shared/src/external/irsGateway');
 const {
@@ -16,15 +16,11 @@ const {
   assignWorkItems: assignWorkItemsUC,
 } = require('ef-cms-shared/src/business/useCases/workitems/assignWorkItemsInteractor');
 const {
-  createCase,
-} = require('ef-cms-shared/src/persistence/dynamo/cases/createCase');
-const {
-  deleteDocument,
-} = require('ef-cms-shared/src/persistence/s3/deleteDocument');
-
-const {
   completeWorkItem,
 } = require('ef-cms-shared/src/business/useCases/workitems/completeWorkItemInteractor');
+const {
+  createCase,
+} = require('ef-cms-shared/src/persistence/dynamo/cases/createCase');
 const {
   createCase: createCaseUC,
 } = require('ef-cms-shared/src/business/useCases/createCaseInteractor');
@@ -46,6 +42,9 @@ const {
 const {
   createWorkItem: createWorkItemUC,
 } = require('ef-cms-shared/src/business/useCases/workitems/createWorkItemInteractor');
+const {
+  deleteDocument,
+} = require('ef-cms-shared/src/persistence/s3/deleteDocument');
 const {
   deleteWorkItemFromInbox,
 } = require('ef-cms-shared/src/persistence/dynamo/workitems/deleteWorkItemFromInbox');
@@ -162,6 +161,9 @@ const {
   runBatchProcess,
 } = require('ef-cms-shared/src/business/useCases/runBatchProcessInteractor');
 const {
+  runCreateCoverSheet
+} = require('./executors/runCreateCoverSheet')
+const {
   saveWorkItem,
 } = require('ef-cms-shared/src/persistence/dynamo/workitems/saveWorkItem');
 const {
@@ -229,6 +231,13 @@ module.exports = (appContextUser = {}) => {
       Petition: PetitionWithoutFiles,
       PetitionFromPaper: PetitionFromPaperWithoutFiles,
     }),
+    getExecutor: () => ({
+      runCreateCoverSheet,
+    }),
+    getExecutorClient: () => {
+      const lambda = new Lambda();
+      return lambda;
+    },
     getPersistenceGateway: () => {
       return {
         addWorkItemToSectionInbox,

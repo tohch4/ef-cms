@@ -125,8 +125,10 @@ exports.createCase = async ({
   });
   caseToAdd.addDocumentWithoutDocketRecord(stinDocumentEntity);
 
+  let odsDocumentEntity;
+
   if (ownershipDisclosureFileId) {
-    const odsDocumentEntity = new Document({
+    odsDocumentEntity = new Document({
       documentId: ownershipDisclosureFileId,
       documentType: Case.documentTypes.ownershipDisclosure,
       filedBy: user.name,
@@ -144,6 +146,26 @@ exports.createCase = async ({
     applicationContext,
     workItem: newWorkItem.validate().toRawObject(),
   });
+
+  await applicationContext.getExecutor().runCreateCoverSheet({
+    applicationContext,
+    caseId: caseToAdd.caseId,
+    documentId: petitionDocumentEntity.documentId,
+  });
+
+  await applicationContext.getExecutor().runCreateCoverSheet({
+    applicationContext,
+    caseId: caseToAdd.caseId,
+    documentId: stinDocumentEntity.documentId,
+  });
+
+  if (odsDocumentEntity) {
+    await applicationContext.getExecutor().runCreateCoverSheet({
+      applicationContext,
+      caseId: caseToAdd.caseId,
+      documentId: petitionDocumentEntity.documentId,
+    });
+  }
 
   return new Case(caseToAdd).toRawObject();
 };
