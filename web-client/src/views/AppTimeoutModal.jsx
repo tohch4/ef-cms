@@ -1,4 +1,4 @@
-import { sequences, state } from 'cerebral';
+import { sequences } from 'cerebral';
 
 import { ModalDialog } from './ModalDialog';
 import { connect } from '@cerebral/react';
@@ -11,6 +11,14 @@ class AppTimeoutModalComponent extends ModalDialog {
       classNames: 'app-timeout-modal',
       confirmLabel: 'Yes!',
     };
+    this.logoutTimer = setTimeout(() => {
+      this.props.logoutSequence();
+    }, 5000);
+  }
+
+  runConfirmSequence() {
+    clearTimeout(this.logoutTimer);
+    this.props.stayLoggedInSequence();
   }
 
   renderBody() {
@@ -20,7 +28,8 @@ class AppTimeoutModalComponent extends ModalDialog {
 
 export const AppTimeoutModal = connect(
   {
-    confirmSequence: sequences.confirmStayLoggedInSequence,
+    logoutSequence: sequences.signOutSequence,
+    stayLoggedInSequence: sequences.confirmStayLoggedInSequence,
   },
   AppTimeoutModalComponent,
 );
