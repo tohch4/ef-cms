@@ -8,7 +8,9 @@ import { UnidentifiedUserError } from './UnidentifiedUserError';
 export const ErrorFactory = {
   getError: e => {
     let responseCode = (e.response && e.response.status) || e.statusCode;
-    if (403 == responseCode) {
+    if (e.message === 'Upload canceled') {
+      return new Error('User-Canceled Upload');
+    } else if (403 == responseCode) {
       return new UnauthorizedRequestError(e);
     } else if (404 == responseCode) {
       return new NotFoundError(e);
