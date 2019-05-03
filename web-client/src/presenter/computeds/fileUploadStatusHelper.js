@@ -2,6 +2,7 @@ import { state } from 'cerebral';
 
 export const fileUploadStatusHelper = get => {
   const timeRemaining = get(state.timeRemaining);
+  const isCancelable = !!Number.isFinite(timeRemaining);
   let statusMessage;
 
   if (!Number.isFinite(timeRemaining)) {
@@ -17,6 +18,7 @@ export const fileUploadStatusHelper = get => {
   }
 
   return {
+    isCancelable,
     statusMessage,
   };
 };
