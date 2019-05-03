@@ -12,6 +12,20 @@ exports.uploadPdf = async ({
 }) => {
   const documentId = applicationContext.getUniqueId();
   const formData = new FormData();
+  const httpClient = applicationContext.getHttpClient();
+
+  let reqCancelToken = {};
+  window.cancelFileUploads = window.cancelFileUploads || [];
+
+  if (httpClient.hasOwnProperty('CancelToken')) {
+    const CancelToken = httpClient.CancelToken;
+    reqCancelToken = {
+      cancelToken: new CancelToken(function executor(c) {
+        window.cancelFileUploads.push(() => c('Upload canceled'));
+      }),
+    };
+  }
+
   formData.append('key', documentId);
   formData.append('X-Amz-Algorithm', policy.fields['X-Amz-Algorithm']);
   formData.append('X-Amz-Credential', policy.fields['X-Amz-Credential']);
@@ -29,6 +43,7 @@ exports.uploadPdf = async ({
       /* eslint no-underscore-dangle: ["error", {"allow": ["_boundary"] }] */
       'content-type': `multipart/form-data; boundary=${formData._boundary}`,
     },
+    ...reqCancelToken,
     onUploadProgress,
   });
   return documentId;

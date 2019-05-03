@@ -11,10 +11,15 @@ import { state } from 'cerebral';
 export const submitExternalDocumentSequence = [
   openFileUploadStatusModalAction,
   fileExternalDocumentAction,
-  setCaseAction,
-  getFileExternalDocumentAlertSuccessAction,
-  setAlertSuccessAction,
-  set(state.saveAlertsForNavigation, true),
-  clearModalAction,
-  navigateToCaseDetailAction,
+  {
+    cancel: [],
+    success: [
+      setCaseAction,
+      getFileExternalDocumentAlertSuccessAction,
+      setAlertSuccessAction,
+      set(state.saveAlertsForNavigation, true),
+      clearModalAction,
+      navigateToCaseDetailAction,
+    ],
+  },
 ];
