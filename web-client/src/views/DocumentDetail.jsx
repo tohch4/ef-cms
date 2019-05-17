@@ -1,38 +1,27 @@
-import { CaseDetailEdit } from './CaseDetailEdit/CaseDetailEdit';
 import { CaseDetailHeader } from './CaseDetailHeader';
-import { CaseDetailReadOnly } from './CaseDetailReadOnly';
 import { CompletedMessages } from './DocumentDetail/CompletedMessages';
 import { CreateMessageModalDialog } from './DocumentDetail/CreateMessageModalDialog';
+import { DocumentActions } from './DocumentDetail/DocumentActions';
+import { DocumentInfo } from './DocumentDetail/DocumentInfo';
 import { ErrorNotification } from './ErrorNotification';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Messages } from './DocumentDetail/Messages';
+import { PDFPreview } from './DocumentDetail/PDFPreview';
 import { PendingMessages } from './DocumentDetail/PendingMessages';
 import { RecallPetitionModalDialog } from './RecallPetitionModalDialog';
 import { ServeToIrsModalDialog } from './ServeToIrsModalDialog';
 import { SuccessNotification } from './SuccessNotification';
 import { Tab, Tabs } from '../ustc-ui/Tabs/Tabs';
 import { connect } from '@cerebral/react';
-import { sequences, state } from 'cerebral';
+import { state } from 'cerebral';
+
 import React from 'react';
 
 export const DocumentDetail = connect(
   {
-    baseUrl: state.baseUrl,
-    caseHelper: state.caseDetailHelper,
-    clickServeToIrsSequence: sequences.clickServeToIrsSequence,
     helper: state.documentDetailHelper,
-    setModalDialogNameSequence: sequences.setModalDialogNameSequence,
     showModal: state.showModal,
-    token: state.token,
   },
-  ({
-    baseUrl,
-    caseHelper,
-    clickServeToIrsSequence,
-    helper,
-    setModalDialogNameSequence,
-    showModal,
-    token,
-  }) => {
+  ({ helper, showModal }) => {
     return (
       <>
         <CaseDetailHeader />
@@ -44,107 +33,22 @@ export const DocumentDetail = connect(
           </span>
           <SuccessNotification />
           <ErrorNotification />
-          <div className="grid-container padding-x-0">
-            <div className="grid-row grid-gap">
-              <div className="grid-col-5">
-                <Tabs className="no-full-border-bottom" bind="currentTab">
-                  {helper.showDocumentInfoTab && (
-                    <Tab
-                      tabName="Document Info"
-                      title="Document Info"
-                      id="tab-document-info"
-                    >
-                      <div
-                        id="tab-document-info-panel"
-                        aria-labelledby="tab-document-info"
-                      >
-                        {helper.showCaseDetailsEdit && <CaseDetailEdit />}
-                        {helper.showCaseDetailsView && <CaseDetailReadOnly />}
-                      </div>
-                    </Tab>
-                  )}
-                  <Tab
-                    tabName="Messages"
-                    title="Messages"
-                    id="tab-pending-messages"
-                  >
-                    <div
-                      id="tab-pending-messages-panel"
-                      aria-labelledby="tab-pending-messages"
-                    >
-                      <Tabs
-                        className="container-tabs no-full-border-bottom"
-                        id="case-detail-messages-tabs"
-                        bind="documentDetail.messagesTab"
-                        boxed
-                      >
-                        <Tab
-                          tabName="inProgress"
-                          title="In Progress"
-                          id="tab-messages-in-progress"
-                        >
-                          <PendingMessages />
-                        </Tab>
-                        <Tab
-                          tabName="completed"
-                          title="Complete"
-                          id="tab-messages-completed"
-                        >
-                          <CompletedMessages />
-                        </Tab>
-                      </Tabs>
-                    </div>
-                  </Tab>
-                </Tabs>
-              </div>
-              <div className="grid-col-7 doc-detail-pane">
-                <div className="top-bar clear-both">
-                  <div className="full-width">
-                    <span className="float-right">
-                      {caseHelper.showServeToIrsButton &&
-                        helper.formattedDocument.isPetition && (
-                          <button
-                            className="usa-button serve-to-irs"
-                            onClick={() => clickServeToIrsSequence()}
-                          >
-                            <FontAwesomeIcon icon={['fas', 'clock']} />
-                            Serve to IRS
-                          </button>
-                        )}
-                      {caseHelper.showRecallButton &&
-                        helper.formattedDocument.isPetition && (
-                          <span className="recall-button-box">
-                            <FontAwesomeIcon icon={['far', 'clock']} />
-                            Batched for IRS
-                            <button
-                              className="recall-petition"
-                              onClick={() =>
-                                setModalDialogNameSequence({
-                                  showModal: 'RecallPetitionModalDialog',
-                                })
-                              }
-                            >
-                              Recall
-                            </button>
-                          </span>
-                        )}
-                    </span>
-                  </div>
-                </div>
-                {/* we can't show the iframe in cypress or else cypress will pause and ask for a save location for the file */}
-                {!process.env.CYPRESS && (
-                  <iframe
-                    title={`Document type: ${
-                      helper.formattedDocument.documentType
-                    }`}
-                    src={`${baseUrl}/documents/${
-                      helper.formattedDocument.documentId
-                    }/documentDownloadUrl?token=${token}`}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
+          <DocumentActions />
+
+          <Tabs className="no-full-border-bottom" bind="currentTab">
+            {helper.showDocumentInfoTab && (
+              <Tab
+                tabName="Document Info"
+                title="Document Info"
+                id="tab-document-info"
+              >
+                <DocumentInfo />
+              </Tab>
+            )}
+            <Tab tabName="Messages" title="Messages" id="tab-pending-messages">
+              <Messages />
+            </Tab>
+          </Tabs>
         </section>
         {showModal === 'ServeToIrsModalDialog' && <ServeToIrsModalDialog />}
         {showModal === 'RecallPetitionModalDialog' && (
