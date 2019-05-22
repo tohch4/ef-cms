@@ -1,4 +1,4 @@
-import { Text } from '../../ustc-ui/Text/Text';
+import { Select } from '../../ustc-ui/Select/Select';
 import { connect } from '@cerebral/react';
 import { get } from 'lodash';
 import { sequences, state } from 'cerebral';
@@ -22,46 +22,21 @@ export const SupportingDocumentSelect = connect(
   }) => {
     return (
       <React.Fragment>
-        <div
-          className={`usa-form-group ${
-            validationErrors && validationErrors.previousDocument
-              ? 'usa-input-error'
-              : ''
-          }`}
-        >
-          <label htmlFor={'previous-document'} className="usa-label">
-            Which Document is This Supporting?
-          </label>
-          <select
-            className="usa-select"
-            name="previousDocument"
-            id="previous-document"
-            value={get(form, 'previousDocument', '')}
-            aria-label="previousDocument"
-            onChange={e => {
-              updateDocketEntryFormValueSequence({
-                key: e.target.name,
-                value: e.target.value,
-              });
-              validateDocketEntrySequence();
-            }}
-          >
-            <option value="">- Select -</option>
-            {addDocketEntryHelper.previouslyFiledWizardDocuments.map(
-              (documentTitle, idx) => {
-                return (
-                  <option key={idx} value={documentTitle}>
-                    {documentTitle}
-                  </option>
-                );
-              },
-            )}
-          </select>
-          <Text
-            className="usa-input-error-message"
-            bind="validationErrors.previousDocument"
-          />
-        </div>
+        <Select
+          error={validationErrors && validationErrors.previousDocument}
+          label="Which Document is This Supporting?"
+          name="previousDocument"
+          id="previous-document"
+          value={get(form, 'previousDocument', '')}
+          values={addDocketEntryHelper.previouslyFiledWizardDocuments}
+          onChange={e => {
+            updateDocketEntryFormValueSequence({
+              key: e.target.name,
+              value: e.target.value,
+            });
+            validateDocketEntrySequence();
+          }}
+        />
       </React.Fragment>
     );
   },

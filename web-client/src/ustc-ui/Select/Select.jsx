@@ -21,6 +21,7 @@ export const Select = connect(props => {
         value={value}
         onChange={onChange}
         disabled={disabled}
+        aria-label={name}
         aria-disabled={ariaDisabled}
         aria-describedby={ariaDescribedby}
       >
