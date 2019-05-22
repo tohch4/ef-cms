@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Select } from '../../ustc-ui/Select/Select';
 import { StateDrivenFileInput } from '../FileDocument/StateDrivenFileInput';
 import { SupportingDocumentSelect } from './SupportingDocumentSelect';
 import { Text } from '../../ustc-ui/Text/Text';
@@ -59,46 +60,24 @@ export const SupportingDocumentForm = connect(
             />
           </div>
 
-          <div
-            className={`usa-form-group ${
-              validationErrors.documentType ? 'usa-input-error' : ''
-            }`}
-          >
-            <label
-              htmlFor="event-code"
-              id="event-code-label"
-              className="usa-label"
-            >
-              Document Type
-            </label>
-            <select
-              className="usa-select"
-              name="eventCode"
-              id="event-code"
-              aria-describedby="event-code-label"
-              onChange={e => {
-                updateDocketEntryFormValueSequence({
-                  key: e.target.name,
-                  value: e.target.value,
-                });
-                validateDocketEntrySequence();
-              }}
-              value={form.eventCode || ''}
-            >
-              <option value="">- Select -</option>
-              {addDocketEntryHelper.supportingDocumentTypeList.map(entry => {
-                return (
-                  <option key={entry.eventCode} value={entry.eventCode}>
-                    {entry.documentTypeDisplay}
-                  </option>
-                );
-              })}
-            </select>
-            <Text
-              className="usa-input-error-message"
-              bind="validationErrors.documentType"
-            />
-          </div>
+          <Select
+            error={validationErrors.documentType}
+            label="Document Type"
+            name="eventCode"
+            id="event-code"
+            aria-describedby="event-code-label"
+            onChange={e => {
+              updateDocketEntryFormValueSequence({
+                key: e.target.name,
+                value: e.target.value,
+              });
+              validateDocketEntrySequence();
+            }}
+            value={form.eventCode || ''}
+            values={addDocketEntryHelper.supportingDocumentTypeList}
+            keys={({ eventCode }) => eventCode}
+            formatter={({ documentTypeDisplay }) => documentTypeDisplay}
+          />
 
           {addDocketEntryHelper.showSupportingDocumentFreeText && (
             <div

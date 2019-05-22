@@ -2,7 +2,9 @@ import { sequences, state } from 'cerebral';
 
 import { Contacts } from '../StartCase/Contacts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Select } from '../../ustc-ui/Select/Select';
 import { connect } from '@cerebral/react';
+
 import React from 'react';
 
 export const PartyInformation = connect(
@@ -54,34 +56,22 @@ export const PartyInformation = connect(
           </div>
         </div>
         <div className="subsection party-type">
-          <div className="usa-form-group">
-            <label htmlFor="party-type" className="usa-label">
-              Party Type
-            </label>
-            <select
-              className="usa-select"
-              id="party-type"
-              name="partyType"
-              value={caseDetail.partyType}
-              onChange={e => {
-                updateCasePartyTypeSequence({
-                  key: e.target.name,
-                  value: e.target.value,
-                });
-                autoSaveCaseSequence();
-              }}
-            >
-              <option value="">- Select -</option>
-              {Object.keys(caseDetailEditHelper.partyTypes).map(partyType => (
-                <option
-                  key={partyType}
-                  value={caseDetailEditHelper.partyTypes[partyType]}
-                >
-                  {caseDetailEditHelper.partyTypes[partyType]}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            id="party-type"
+            name="partyType"
+            label="Party Type"
+            value={caseDetail.partyType}
+            onChange={e => {
+              updateCasePartyTypeSequence({
+                key: e.target.name,
+                value: e.target.value,
+              });
+              autoSaveCaseSequence();
+            }}
+            values={Object.keys(caseDetailEditHelper.partyTypes).map(
+              partyType => caseDetailEditHelper.partyTypes[partyType],
+            )}
+          />
         </div>
         {caseDetailEditHelper.showOwnershipDisclosureStatement && (
           <div className="subsection">

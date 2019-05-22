@@ -2,18 +2,12 @@ import { connect } from '@cerebral/react';
 import React from 'react';
 
 export const Select = connect(props => {
-  const {
-    id,
-    disabled,
-    keys,
-    name,
-    label,
-    onChange,
-    values,
-    error,
-    formatter,
-  } = props;
+  const { id, disabled, name, label, onChange, value, values, error } = props;
   const ariaDisabled = props['aria-disabled'];
+  const ariaDescribedby = props['aria-describedby'];
+
+  const formatter = props['formatter'] || (v => v);
+  const keys = props['keys'] || (v => v);
 
   return (
     <div className={'usa-form-group ' + (error ? 'usa-form-group--error' : '')}>
@@ -24,9 +18,11 @@ export const Select = connect(props => {
         className={'usa-select ' + (error ? 'usa-select--error' : '')}
         id={id}
         name={name}
+        value={value}
         onChange={onChange}
         disabled={disabled}
         aria-disabled={ariaDisabled}
+        aria-describedby={ariaDescribedby}
       >
         <option value="">- Select -</option>
         {values.map(value => (
